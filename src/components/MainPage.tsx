@@ -1,5 +1,17 @@
+import ExploreSection from "./MainContent/ExploreSection";
+import MyMusicSection from "./MainContent/MyMusicSection";
+import NewsSection from "./MainContent/NewsSection";
+import RadioEpisodes from "./MainContent/RadioEpisodes";
+
 const MainPage = () => {
-  return <h1>Main Page</h1>;
+  return (
+    <>
+      <NewsSection />
+      <RadioEpisodes />
+      <MyMusicSection />
+      <ExploreSection />
+    </>
+  );
 };
 
 export default MainPage;
