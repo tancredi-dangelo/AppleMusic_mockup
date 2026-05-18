@@ -83,6 +83,7 @@ const NewsSection = () => {
                 aspectRatio: "16 / 9",
                 objectFit: "cover",
                 borderRadius: "clamp(4px, 1vw, 10px)",
+                cursor: "pointer",
               }}
             />
           </Col>

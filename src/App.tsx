@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 // COMPONENTS
 import Header from "./components/Header/Header";
 import LoginPage from "./components/LoginPage";
+import RegisterPage from "./components/RegisterPage";
 import MainPage from "./components/MainPage";
 import Footer from "./components/Footer";
 import AlbumPage from "./components/AlbumPage";
@@ -20,7 +21,9 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
+        <Route path="/register" element={<RegisterPage />}></Route>
         <Route path="/album/:albumId" element={<AlbumPage />}></Route>
+        <Route path="/myplaylists" />
         <Route path="/*" element={<PageNotFound />}></Route>
       </Routes>
       <Footer />

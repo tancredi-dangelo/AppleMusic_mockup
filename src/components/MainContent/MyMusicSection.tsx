@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
+import { type Album } from "../strayInterfaces/Album";
+import { type Track } from "../strayInterfaces/Track";
+
 const URL: string =
   "https://striveschool-api.herokuapp.com/api/deezer/search?q=";
 
@@ -18,22 +21,6 @@ const ARTISTS: string[] = [
   "team sleep",
   "black sabbath",
 ];
-
-interface Album {
-  title: string;
-  artist: string;
-  img: string;
-}
-
-interface Track {
-  album: {
-    title: string;
-    cover_medium: string;
-  };
-  artist: {
-    name: string;
-  };
-}
 
 interface API_Response {
   data: Track[];

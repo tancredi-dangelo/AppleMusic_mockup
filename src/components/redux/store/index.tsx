@@ -1,32 +1,66 @@
 // IMPORT REDUCERS
-import playerReducer from "../reducers/playerReducer";
 import sidebarReducer from "../reducers/sidebarReducer";
-import userReducer from "../reducers/userReducer";
+import currentUserReducer from "../reducers/currentUserReducer";
+import usersReducer from "../reducers/usersReducer";
 
 // IMPORT STORE CONFIG
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 
 // IMPORT PERSIST CONFIG
-import { persistStore, persistReducer } from "redux-persist";
-import localStorage from "redux-persist/es/storage";
+import {
+  persistStore,
+  persistReducer,
+  type PersistConfig,
+} from "redux-persist";
 
-const persistConfig = {
-  storage: localStorage,
-  key: "root",
-};
+import localStorage from "redux-persist/es/storage";
+import { encryptTransform } from "@shanie1331/redux-persist-transform-encrypt";
+import trackPlayerReducer from "../reducers/trackPlayerReducer";
 
 const mainReducer = combineReducers({
-  /*user: userReducer,*/
+  currentUser: currentUserReducer,
+  users: usersReducer,
   sidebar: sidebarReducer,
-  /*player: playerReducer,*/
+  trackPlayer: trackPlayerReducer,
 });
 
-/*const persistedReducer = persistReducer(persistConfig, mainReducer);*/
+type RootState = ReturnType<typeof mainReducer>;
+
+const persistConfig: PersistConfig<RootState> = {
+  storage: localStorage,
+  key: "root",
+  whitelist: ["currentUser", "users", "trackPlayer"],
+  transforms: [
+    encryptTransform({
+      secretKey: "secret-key",
+      onError(error: Error) {
+        console.error("[persist-encrypt] error:", error);
+      },
+    }),
+  ],
+};
+
+const persistedReducer = persistReducer(persistConfig, mainReducer);
 
 const store = configureStore({
-  reducer: mainReducer,
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [
+          "persist/PERSIST",
+          "persist/REHYDRATE",
+          "persist/PAUSE",
+          "persist/PURGE",
+          "persist/FLUSH",
+          "persist/REGISTER",
+        ],
+      },
+    }),
 });
 
-const persistedStore = persistStore(store);
+const persistedStore = persistStore(store as any);
 
-export default store;
+export type AppDispatch = typeof store.dispatch;
+export { store, persistedStore };
+export type { RootState };

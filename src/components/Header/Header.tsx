@@ -5,21 +5,39 @@ import Navbar from "react-bootstrap/Navbar";
 
 // IMPORT REDUX
 import { useSelector, useDispatch } from "react-redux";
+import { type RootState } from "../redux/store";
 
 // IMPORT SIDEBAR REDUX FUNCTION
 import handleSidebar from "../redux/actions/sidebarActions";
+import Sidebar from "./Sidebar";
 
 // IMPORT ROUTING
 import { Link, useNavigate } from "react-router-dom";
-import Sidebar from "./Sidebar";
+import { useLocation } from "react-router-dom";
 
 // IMPORT LOGO
 import logo from "../../../public/logos/apple.svg";
+import VolumeController from "./VolumeController";
+import TrackPlayer from "./Player";
+import { useRef } from "react";
+import type { Track } from "../strayInterfaces/Track";
 
 function Header() {
   const navigate = useNavigate();
-  const show = useSelector((state: { sidebar: boolean }) => state.sidebar);
   const dispatch = useDispatch();
+  const location = useLocation();
+
+  const show = useSelector((state: RootState) => state.sidebar);
+
+  const isCurrentUser = useSelector(
+    (state: RootState) => state.currentUser.info.email !== "",
+  );
+
+  const currentUserUsername = useSelector(
+    (state: RootState) => state.currentUser.info.username,
+  );
+
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   return (
     <>
@@ -33,7 +51,7 @@ function Header() {
       >
         <Container
           fluid
-          className="mx-3 py-5 h-100 d-flex align-items-center justify-content-between"
+          className="mx-3 h-100 d-flex align-items-center justify-content-between"
         >
           {/* BURGER BUTTON */}
           <Button
@@ -62,17 +80,31 @@ function Header() {
             </Navbar.Brand>
           </div>
 
-          {/* LOG IN */}
-          <Link
-            to={"/login"}
-            className="text-decoration-none"
-            style={{
-              color: "#fa2d48",
-              fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
-            }}
-          >
-            Accedi
-          </Link>
+          {location.pathname !== "/login" &&
+            location.pathname !== "/register" &&
+            (isCurrentUser ? (
+              <span
+                style={{
+                  color: "#fa2d48",
+                  fontSize: "clamp(1rem, 2vw, 1.2rem)",
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate("/profile/")}
+              >
+                {currentUserUsername}
+              </span>
+            ) : (
+              <Link
+                to="/login"
+                className="text-decoration-none"
+                style={{
+                  color: "#fa2d48",
+                  fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
+                }}
+              >
+                Sign In
+              </Link>
+            ))}
         </Container>
       </Navbar>
       <Sidebar />
